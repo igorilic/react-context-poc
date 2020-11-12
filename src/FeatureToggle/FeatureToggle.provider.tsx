@@ -17,7 +17,7 @@ const countReducer = (state: State, action: Action) => {
     case "decrement":
       return { count: state.count - 1 };
     default:
-      throw new Error(`Unhandled action type: ${action.type}`);
+      throw new Error(`Unhandled action type: ${action!.type}`);
   }
 };
 
