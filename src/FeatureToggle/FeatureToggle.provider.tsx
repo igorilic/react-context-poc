@@ -1,5 +1,5 @@
 import * as React from "react";
-import axios, { AxiosAdapter, AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { Feature } from "./types";
 
 const REQUEST = "request";
@@ -71,35 +71,58 @@ const countReducer = (state: State, action: Action) => {
         error: action.payload
       };
 
-    case SUCCESS:
+    case SUCCESS: {
+      const normalized = action.payload.reduce<NormalizedFeatures>(
+        (acc, curr) => {
+          curr.tags.forEach((tag) => {
+            if (Object.keys(acc).includes(tag)) {
+              acc[tag] = [...acc[tag], curr];
+            } else {
+              acc[tag] = [curr];
+            }
+          });
+          return acc;
+        },
+        {}
+      );
       return {
         ...state,
         isFetching: false,
         entities: action.payload,
         error: null,
-        normalized: {
-          ...action.payload.reduce<NormalizedFeatures>((acc, curr) => {
-            curr.tags.forEach((tag) => {
-              if (Object.keys(acc).includes(tag)) {
-                acc[tag] = [...acc[tag], curr];
-              } else {
-                acc[tag] = [curr];
-              }
-            });
-            return acc;
-          }, {})
-        }
+        normalized
       };
+    }
     default:
       throw new Error("Unhandled action type");
   }
 };
 
+const res: Feature[] = [
+  {
+    name: "Decrement",
+    description: "Decrement enabler",
+    tags: ["decrement"],
+    constraints: [
+      {
+        dataScope: '{"countryId": "AU"}',
+        enabled: true
+      }
+    ]
+  }
+];
 const fetchFeatures = async (dispatch: Dispatch) => {
   dispatch(fetchFeaturesRequest());
   try {
-    const response: AxiosResponse<Feature[]> = await api.get("/api/features");
-    dispatch(fetchFeatureSuccess(response.data));
+    let returns: Feature[];
+
+    if (process.env.STAGE === "PROD") {
+      const response: AxiosResponse<Feature[]> = await api.get("/api/features");
+      returns = response.data;
+    } else {
+      returns = res;
+    }
+    dispatch(fetchFeatureSuccess(returns));
   } catch (error) {
     dispatch(fetchFeaturesFailure("some error"));
   }

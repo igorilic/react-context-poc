@@ -1,17 +1,19 @@
 import { NowRequest, NowResponse } from "@vercel/node";
 
 export default (request: NowRequest, response: NowResponse) => {
-  const res = {
-    name: "Decrement",
-    description: "Decrement enabler",
-    tags: ["decrement"],
-    constraints: [
-      {
-        dataScope: '{"countryId": "AU"}',
-        enabled: true
-      }
-    ]
-  };
+  const res = [
+    {
+      name: "Decrement",
+      description: "Decrement enabler",
+      tags: ["decrement"],
+      constraints: [
+        {
+          dataScope: '{"countryId": "AU"}',
+          enabled: true
+        }
+      ]
+    }
+  ];
   const { tag = "decrement" } = request.query;
   if (tag === "decrement") {
     response.status(200).send(res);
