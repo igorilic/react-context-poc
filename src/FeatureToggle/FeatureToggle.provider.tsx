@@ -116,7 +116,8 @@ const fetchFeatures = async (dispatch: Dispatch) => {
   try {
     let returns: Feature[];
 
-    if (process.env.STAGE === "PROD") {
+    console.info(process.env);
+    if (process.env.NODE_ENV === "production") {
       const response: AxiosResponse<Feature[]> = await api.get("/api/features");
       returns = response.data;
     } else {
