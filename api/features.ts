@@ -14,7 +14,10 @@ export default (request: NowRequest, response: NowResponse) => {
       ]
     }
   ];
-  response.setHeader("Cache-Control", "max-age=0, s-maxage=60");
+  response.setHeader(
+    "Cache-Control",
+    "no-store, must-revalidate, no-cache, max-age=0"
+  );
   const { tag = "decrement" } = request.query;
   if (tag === "decrement") {
     response.status(200).send(res);
