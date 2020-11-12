@@ -1,6 +1,7 @@
 import * as React from "react";
 import {
   CountProvider,
+  fetchFeatures,
   useCountDispatch,
   useCountState
 } from "./FeatureToggle";
@@ -12,6 +13,9 @@ const CountDisplay = () => {
 
 const Counter = () => {
   const dispatch = useCountDispatch();
+  React.useEffect(() => {
+    fetchFeatures(dispatch);
+  }, [dispatch]);
   return (
     <div>
       <button onClick={() => dispatch({ type: "increment" })}>+ 1</button>
