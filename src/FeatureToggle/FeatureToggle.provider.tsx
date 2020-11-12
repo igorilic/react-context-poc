@@ -98,7 +98,7 @@ const countReducer = (state: State, action: Action) => {
 const fetchFeatures = async (dispatch: Dispatch) => {
   dispatch(fetchFeaturesRequest());
   try {
-    const response: AxiosResponse<Feature[]> = await api.get("/features");
+    const response: AxiosResponse<Feature[]> = await api.get("/api/features");
     dispatch(fetchFeatureSuccess(response.data));
   } catch (error) {
     dispatch(fetchFeaturesFailure("some error"));
